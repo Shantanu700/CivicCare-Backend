@@ -1,0 +1,49 @@
+import uuid6
+
+from django.db import models
+from django.contrib.auth.models import AbstractUser, UserManager
+
+from apps.core.enums import Status
+from apps.core.managers import DeleteStatusManager
+
+# Create your models here.
+
+
+class BaseModel(models.Model):
+    BASE_MODEL_FIELDS = (
+        "id",
+        "status",
+        "created_at",
+        "updated_at",
+    )
+
+    uuid = models.UUIDField(default=uuid6.uuid6)
+    status = models.IntegerField(default=Status.CREATED)
+    created_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
+
+    objects = DeleteStatusManager()
+
+    class Meta:
+        abstract = True
+
+
+class User(BaseModel, AbstractUser):
+    USER_MODEL_FIELDS = BaseModel.BASE_MODEL_FIELDS + (
+        "is_superuser",
+        "last_login",
+        "is_staff",
+        "is_active",
+        "date_joined",
+        "groups",
+        "user_permissions",
+    )
+
+    phone_number = models.IntegerField(null=True)
+
+    objects = UserManager()
+
+    REQUIRED_FIELDS = []
+
+
+
