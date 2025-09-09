@@ -27,7 +27,7 @@ class BaseSerializer(serializers.ModelSerializer):
             for each in difference:
                 self.fields.pop(each)
         elif exclude is not None:
-            trash = set(exclude).union(set(BaseModel.BASE_MODEL_FIELDS))
+            trash = set(exclude).intersection(set(BaseModel.BASE_MODEL_FIELDS))
             for each in trash:
                 self.fields.pop(each)
         else:
