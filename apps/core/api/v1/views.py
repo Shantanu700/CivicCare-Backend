@@ -1,10 +1,6 @@
 import base64
 
-from multiprocessing import context
-from turtle import distance
-from typing import Dict, Required
-from urllib import request
-
+from typing import Dict
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.gis.geos import Point
 from django.contrib.gis.db.models.functions import Distance

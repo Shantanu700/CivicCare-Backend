@@ -1,0 +1,33 @@
+
+services:
+  django:
+    build:
+      context: ../..
+      dockerfile: ./docker/nonprod/Dockerfile
+      args:
+        - USER=${USER}
+    volumes:
+      - ../..:/sih_project
+    ports:
+      - 8002:8000
+      - 8003:8001
+    container_name: django_sih
+    environment:
+      POSTGRES_DB: base
+      POSTGRES_USER: kubejen
+      POSTGRES_PASSWORD: postgres@nonprod
+      POSTGRES_HOST: dev_postgres
+      POSTGRES_PORT: 5432
+    # depends_on:
+    #   - postgres
+    networks:
+      - db
+    # command: python manage.py runserver 0.0.0.0:8000
+    command: /bin/sh -c "while sleep 1000; do :; done"
+# volumes:
+#   postgres_data:
+
+networks:
+  db:
+    name: non_prod_db_network
+    external: true
