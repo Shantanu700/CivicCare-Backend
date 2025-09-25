@@ -29,7 +29,7 @@ dependencies = [
     "django-redis (>=6.0.0,<7.0.0)",
     "redis (>=6.4.0,<7.0.0)",
     "djangorestframework-simplejwt>=5.5.1",
-    "dj-database-url>=3.0.1",
+    "django-cloudinary-storage>=0.3.0",
 ]
 
 [build-system]

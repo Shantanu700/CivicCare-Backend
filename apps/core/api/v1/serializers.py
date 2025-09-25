@@ -1,19 +1,30 @@
 from os import read
+from xml.dom import ValidationErr
 from attr import field
 from rest_framework import serializers
 
 from base.api.v1.serializers import BaseSerializer
+# from base.api. import BaseSerializer
 
-from apps.core.models import Complaints, DropDown, User
 
+from apps.core.models import Complaints, DropDown, User, BaseModel
+
+from apps.core.utils import classify_civic_issue
 # Write your serializers here
 
 
 class DropDownSerializer(BaseSerializer):
 
+    sub_category = serializers.SerializerMethodField(read_only=True)
+    category = serializers.CharField(source="label")
+
     class Meta:
         model = DropDown
         fields = "__all__"
+
+    def get_sub_category(self, instance):
+        children = DropDown.objects.filter(parent=instance)
+        return DropDownSerializer(children, many=True, exclude=BaseModel.BASE_MODEL_FIELDS + ("parent", "label")).data
 
 
 class LoginSerializer(BaseSerializer):
@@ -48,6 +59,11 @@ class ComplaintSerializer(BaseSerializer):
 
     def get_total_upvotes(self, instance):
         return instance.upvoted_complaints.count()
+
+    def validate(self, data):
+        if not classify_civic_issue(data["title"], data["description"]):
+            raise serializers.ValidationError("Title or Description are not Civic Issues")
+        return data
 
     # def create(self, validated_data):
     #     return super().create(**validated_data)

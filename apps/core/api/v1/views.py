@@ -47,7 +47,9 @@ class DropdownAV(BaseAV):
     def post(self, request):
         data = request.data
         serializer = DropDownSerializer(
-            data=data, exclude=BaseModel.BASE_MODEL_FIELDS + ("parent")
+            data=data,
+            exclude=BaseModel.BASE_MODEL_FIELDS + ("parent", "label"),
+            many=True,
         )
         if serializer.is_valid():
             serializer.save()
@@ -69,7 +71,9 @@ class DropdownAV(BaseAV):
             parent=DropDown.objects.get(uuid=data.get("uuid"))
         )
         serializer = DropDownSerializer(
-            dropdowns, many=True, exclude=BaseModel.BASE_MODEL_FIELDS
+            dropdowns,
+            many=True,
+            exclude=BaseModel.BASE_MODEL_FIELDS + ("parent", "label"),
         )
         return Response(serializer.data)
 
@@ -231,7 +235,7 @@ class ComplaintAV(BaseAV):
         nearest_complaints = (
             Complaints.objects.filter(location__distance_lte=(user_location, D(km=10)))
             .exclude(status=CompalaintsChoices.DELETED)
-            .annotate(distance=Distance("location", request.user.location))
+            .annotate(distance=Distance("location", user_location))
             .order_by("distance")
         )
         serializer = ComplaintSerializer(
@@ -259,3 +263,20 @@ class ComplaintAV(BaseAV):
         else:
             request.user.upvoted_posts.add(Complaints.objects.get(id=issue_id))
             return Response({"msg": "Post Upvoted"})
+
+
+class IssuesAV(BaseAV):
+
+    authentication = False
+
+    def get(self, request):
+        nearest_complaints = Complaints.objects.filter().exclude(
+            status=CompalaintsChoices.DELETED
+        )
+        serializer = ComplaintSerializer(
+            nearest_complaints,
+            many=True,
+            exclude=["uuid"],
+            context={"request": request},
+        )
+        return Response(serializer.data)

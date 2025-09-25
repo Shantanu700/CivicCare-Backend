@@ -1,5 +1,7 @@
 from mailbox import Babyl
 import uuid6
+from cloudinary_storage.storage import MediaCloudinaryStorage
+
 
 from django.contrib.gis.db import models
 from django.contrib.auth.models import AbstractUser, UserManager
@@ -84,7 +86,7 @@ class Complaints(BaseModel):
     )
     title = models.CharField(max_length=255)
     description = models.TextField()
-    image = models.ImageField(upload_to="complaints/images/")
+    image = models.ImageField(upload_to="images/", storage=MediaCloudinaryStorage)
     # address = models.CharField(max_length=500)
     location = models.PointField(blank=True, null=True)
     status = models.CharField(

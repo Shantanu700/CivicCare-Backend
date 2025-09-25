@@ -4,8 +4,8 @@ import time
 
 from django_eventstream import send_event
 
-from apps.core.utils import generate_svg_qr
-# from apps.core.api.v1.serializers import UserTokenSerializer
+# from apps.core.utils import generate_svg_qr
+# # from apps.core.api.v1.serializers import UserTokenSerializer
 
 
 @shared_task
