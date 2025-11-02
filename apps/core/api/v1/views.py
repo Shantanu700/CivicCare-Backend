@@ -6,8 +6,6 @@ from django.contrib.gis.geos import Point
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.measure import D
 
-from pkg_resources import require
-from redis import AuthenticationError
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework import serializers

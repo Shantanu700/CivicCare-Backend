@@ -51,4 +51,8 @@ urlpatterns = [
         "core/",
         include("apps.core.api.v1.urls"),
     ),
+    path(
+        "auth/passkey",
+        include("passkeys.urls"),
+    ),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
