@@ -86,7 +86,7 @@ class Complaints(BaseModel):
     )
     title = models.CharField(max_length=255)
     description = models.TextField()
-    image = models.ImageField(upload_to="images/", storage=MediaCloudinaryStorage)
+    image = models.ImageField(upload_to="images/")
     # address = models.CharField(max_length=500)
     location = models.PointField(blank=True, null=True)
     status = models.CharField(

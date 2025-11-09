@@ -1,3 +1,4 @@
+from enum import verify
 from os import read
 from xml.dom import ValidationErr
 from attr import field
@@ -9,7 +10,7 @@ from base.api.v1.serializers import BaseSerializer
 
 from apps.core.models import Complaints, DropDown, User, BaseModel
 
-from apps.core.utils import classify_civic_issue
+from apps.core.utils import classify_civic_issue, verify_civic_issue
 # Write your serializers here
 
 
@@ -61,7 +62,7 @@ class ComplaintSerializer(BaseSerializer):
         return instance.upvoted_complaints.count()
 
     def validate(self, data):
-        if not classify_civic_issue(data["title"], data["description"]):
+        if not verify_civic_issue(data["image"], description=data["description"]):
             raise serializers.ValidationError("Title or Description are not Civic Issues")
         return data
 

@@ -189,7 +189,7 @@ class LoginAV(BaseAV):
 
 class ComplaintAV(BaseAV):
 
-    authentication = True
+    # authentication = False
 
     @extend_schema(
         request=inline_serializer(
@@ -261,6 +261,17 @@ class ComplaintAV(BaseAV):
         else:
             request.user.upvoted_posts.add(Complaints.objects.get(id=issue_id))
             return Response({"msg": "Post Upvoted"})
+
+class VerifyComplaintAV(BaseAV):
+
+    def post(self, request):
+        data = request.data
+
+
+
+
+
+
 
 
 class IssuesAV(BaseAV):

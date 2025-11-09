@@ -31,6 +31,7 @@ dependencies = [
     "djangorestframework-simplejwt>=5.5.1",
     "django-cloudinary-storage>=0.3.0",
     "django-passkey-auth>=0.2.0",
+    "openai>=2.7.1",
 ]
 
 [build-system]

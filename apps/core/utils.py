@@ -1,5 +1,14 @@
 import difflib
 import json
+import base64
+from openai import OpenAI
+from django.conf import settings
+from django.core.files.uploadedfile import InMemoryUploadedFile
+
+client = OpenAI(
+  base_url="https://openrouter.ai/api/v1",
+  api_key="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",
+)
 
 CIVIC_ISSUES = {
     "🛣 Roads & Transport": [
@@ -145,3 +154,39 @@ def classify_civic_issue(title: str, description: str) -> str:
     return 0
 
 # Example Run
+
+
+def in_memory_file_to_base64(file_obj):
+    """
+    Convert a Django InMemoryUploadedFile to a Base64 image string.
+    """
+    # Read the file bytes
+    file_bytes = file_obj.read()
+
+    # Encode to base64
+    encoded = base64.b64encode(file_bytes).decode("utf-8")
+
+    # Optional: detect file type (MIME)
+    mime_type = file_obj.content_type  # e.g., "image/png"
+
+    # Combine into a data URI
+    base64_string = f"data:{mime_type};base64,{encoded}"
+
+    # Reset file pointer if needed (so Django can still access it later)
+    file_obj.seek(0)
+
+    return base64_string
+
+def verify_civic_issue(img: InMemoryUploadedFile, description: str):
+    print(description)
+    img_base64_encoded_string = in_memory_file_to_base64(img)
+    response = client.chat.completions.create(
+            model="google/gemini-2.0-flash-exp:free",
+            messages=[
+                {"role": "user", "content": [
+                    {"type": "text", "text": f"Does this image match this description: '{description}'? \n Give a match percentage and short reason. If you have not recieved a description then just tell the match percentage 0 but always include the match percent in the response"},
+                    {"type": "image_url", "image_url": img_base64_encoded_string}
+                ]}
+            ]
+        )
+    print(response)
