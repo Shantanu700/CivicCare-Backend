@@ -7,7 +7,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 
 client = OpenAI(
   base_url="https://openrouter.ai/api/v1",
-  api_key="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",
+  api_key=settings.OPENAI_API_KEY,
 )
 
 CIVIC_ISSUES = {
